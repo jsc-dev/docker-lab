@@ -1,0 +1,30 @@
+db:
+  build: ./mysql
+  ports:
+    - "3306:3306"
+  restart: always
+  environment:
+    MYSQL_ROOT_PASSWORD: vagrant
+    MYSQL_USER: vagrant
+    MYSQL_PASSWORD: vagrant
+    MYSQL_DATABASE: myapp
+  volumes:
+    - ./mysql/db:/var/lib/mysql
+    - ./mysql/logs:/var/log/mysql
+  command: 
+    - usermod -u 1000 mysql
+php:
+    container_name: php
+    hostname: machine9
+    build: ./php
+    expose:
+        - "80"
+    links:
+        - db:db
+    ports:
+        - "80:80"
+    volumes:
+        - ./www:/var/www
+        - ./php/logs/apache2:/var/log/apache2
+        - ./php/sites-enabled:/etc/apache2/sites-enabled
+

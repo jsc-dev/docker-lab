@@ -1,0 +1,17 @@
+# Composer
+composer.phar
+composer.lock
+
+# OS
+.DS_Store
+
+# netbeans
+/nbproject
+/nbproject/private/
+
+# misc
+/_tmp
+addgit.sh
+gitlist
+
+

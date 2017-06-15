@@ -4,6 +4,7 @@ composer.lock
 
 # OS
 .DS_Store
+*~
 
 # netbeans
 /nbproject

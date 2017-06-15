@@ -7,7 +7,7 @@ RUN pecl install redis-3.1.0 && docker-php-ext-enable redis
 
 
 # Install common packages 
-apk add --update \
+RUN apk add --update \
 git \
 nano \
 grep \

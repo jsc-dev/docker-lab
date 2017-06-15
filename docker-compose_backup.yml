@@ -26,5 +26,5 @@ php:
     volumes:
         - ./www:/var/www
         - ./php/logs/apache2:/var/log/apache2
-        - ./php/config:/etc/apache2/sites-enabled
+        - ./php/sites-enabled:/etc/apache2/sites-enabled
 

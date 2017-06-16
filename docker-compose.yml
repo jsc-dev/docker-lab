@@ -48,7 +48,7 @@ phpmyadmin:
 web:
     container_name: web
     hostname: jbox_docker
-    build: .
+    build: ./web
     expose:
         - "80"
     links:

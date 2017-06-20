@@ -81,18 +81,27 @@ phpmyadmin:
     MYSQL_USERNAME: vagrant
     MYSQL_ROOT_PASSWORD: vagrant
 
-web:
-    container_name: web
+apache:
+    container_name: apache
     hostname: jbox_docker
-    build: ./web
+    build: ./apache
     expose:
         - "80"
+    links:
+        - web:web
+    ports:
+        - "80:80"
+    volumes_from:
+        - dataphp
+        - dataapache
+
+web:
+    container_name: web
+    build: ./web
     links:
         - mysql56:mysql56
         - mongo:mongo
         - redis:redis
-    ports:
-        - "80:80"
     volumes_from:
         - dataphp
 
@@ -100,7 +109,9 @@ dataphp:
     image: debian:jessie
     volumes:
         - ./www:/var/www
+
+dataapache:
+    image: alpine:3.5
+    volumes:
         - ./apache/logs/apache2:/var/log/apache2
         - ./apache/sites-enabled:/etc/apache2/sites-enabled
-
-

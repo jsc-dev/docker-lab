@@ -8,3 +8,4 @@ docker-compose build
 docker-compose up -d
 
 #docker-compose run web bash
+#docker-compose run apache bash 

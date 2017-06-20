@@ -10,15 +10,48 @@ mysql56:
     MYSQL_PASSWORD: vagrant
     MYSQL_DATABASE: myapp
   volumes:
-    - ./db/mysql56/db:/var/lib/mysql
+    - ./db/mysql56/data:/var/lib/mysql
     - ./db/mysql56/logs:/var/log/mysql
   command: 
     - usermod -u 1000 mysql
+
+mysql57:
+  container_name: mysql57
+  build: ./db/mysql57
+  ports:
+    - "3307:3306"
+  restart: always
+  environment:
+    MYSQL_ROOT_PASSWORD: vagrant
+    MYSQL_USER: vagrant
+    MYSQL_PASSWORD: vagrant
+    MYSQL_DATABASE: myapp
+  volumes:
+    - ./db/mysql57/data:/var/lib/mysql
+    - ./db/mysql57/logs:/var/log/mysql
+  command:
+    - usermod -u 1000 mysql
+
+mariadb:
+  container_name: mariadb
+  image: mariadb
+  ports:
+    - "3308:3306"
+  environment:
+    - MYSQL_ROOT_PASSWORD=vagrant
+    - MYSQL_USER=vagrant
+    - MYSQL_PASSWORD=vagrant
+    - MYSQL_DATABASE=myapp
+  volumes:
+    - ./db/mariadb/data:/var/lib/mysql
+    - ./db/mariadb/logs:/var/log/mysql
+
 mongo:
   container_name: mongo
   image: mongo
   volumes:
     - ./db/mongo/data:/data/db
+
 solr:
     image: solr
     ports:
@@ -30,12 +63,14 @@ solr:
       - docker-entrypoint.sh
       - solr-precreate
       - mycore
+
 redis:
     image: redis
     ports:
         - "6379:6379"
     volumes:
         - ./db/redis/data:/data
+
 phpmyadmin:
   image: corbinu/docker-phpmyadmin
   links:
@@ -45,6 +80,7 @@ phpmyadmin:
   environment:
     MYSQL_USERNAME: vagrant
     MYSQL_ROOT_PASSWORD: vagrant
+
 web:
     container_name: web
     hostname: jbox_docker
@@ -57,10 +93,14 @@ web:
         - redis:redis
     ports:
         - "80:80"
+    volumes_from:
+        - dataphp
+
+dataphp:
+    image: debian:jessie
     volumes:
         - ./www:/var/www
         - ./apache/logs/apache2:/var/log/apache2
         - ./apache/sites-enabled:/etc/apache2/sites-enabled
-
 
 

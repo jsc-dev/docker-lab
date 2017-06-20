@@ -19,6 +19,7 @@ gitlist
 /db/mongo/data/*
 /db/mysql56/data/*
 /db/mysql57/data/*
+/db/mariadb/data/*
 /db/redis/data/*
 /db/solr/data/*
 /www/*

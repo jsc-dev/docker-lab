@@ -19,7 +19,7 @@ web:
         - dataphp
 
 dataphp:
-    image: debian:jessie
+    image: alpine:3.5
     volumes:
         - ./www:/var/www
 
@@ -28,3 +28,4 @@ dataapache:
     volumes:
         - ./apache/logs/apache2:/var/log/apache2
         - ./apache/sites-enabled:/etc/apache2/sites-enabled
+

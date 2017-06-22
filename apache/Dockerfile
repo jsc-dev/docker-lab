@@ -1,6 +1,6 @@
 FROM ubuntu:15.04
 
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data

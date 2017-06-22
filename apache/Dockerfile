@@ -15,7 +15,7 @@ RUN apt-get update && \
     apt-get install -y git nano curl zip imagemagick libxml2-utils
 
 RUN apt-get -qq -y install apache2 apache2-doc 
-#libapache2-mod-php5
+RUN apt-get -qq -y install libapache2-mod-php5
 RUN service apache2 restart
 
 #RUN apt-get -qq -y install php5-common php5-fpm php5-mysql php5-cli php5-curl

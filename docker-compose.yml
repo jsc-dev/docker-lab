@@ -5,19 +5,11 @@ apache:
     expose:
         - "80"
         - "443"
-    links:
-        - web:web
     ports:
         - "80:80"
     volumes_from:
         - dataphp
         - dataapache
-
-web:
-    container_name: web
-    build: ./web
-    volumes_from:
-        - dataphp
 
 dataphp:
     image: alpine:3.5

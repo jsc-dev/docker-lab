@@ -24,3 +24,4 @@ RUN docker-php-ext-enable solr
 RUN apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev
 RUN pecl install mongodb
 RUN docker-php-ext-enable mongodb
+

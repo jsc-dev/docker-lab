@@ -15,6 +15,12 @@ apache-php56:
     volumes_from:
         - dataphp
         - dataapache
+    links:
+        - mysql57:mysql57
+        - mongo:mongo
+        - redis:redis
+        - solr:solr
+        - mariadb:mariadb
 
 apache-php7:
     build: ./apache-php7
@@ -29,6 +35,12 @@ apache-php7:
         - ./apache-php7/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf
     volumes_from:
         - dataphp
+    links:
+        - mysql57:mysql57 
+        - mongo:mongo
+        - redis:redis
+        - solr:solr
+        - mariadb:mariadb
 
 dataphp:
     image: alpine:3.5
@@ -42,3 +54,69 @@ dataapache:
         - ./apache-php56/sites-enabled:/etc/apache2/sites-enabled
         - ./apache-php56/conf/ports.conf:/etc/apache2/ports.conf
         - ./apache-php56/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf
+
+mysql57:
+  container_name: mysql57
+  build: ./db/mysql57
+  ports:
+    - "3306:3306"
+  restart: always
+  environment:
+    MYSQL_ROOT_PASSWORD: vagrant
+    MYSQL_USER: vagrant
+    MYSQL_PASSWORD: vagrant
+    MYSQL_DATABASE: myapp
+  volumes:
+    - ./db/mysql57/data:/var/lib/mysql
+    - ./db/mysql57/logs:/var/log/mysql
+  command:
+    - usermod -u 1000 mysql
+
+mariadb:
+  container_name: mariadb
+  image: mariadb
+  ports:
+    - "3308:3306"
+  environment:
+    - MYSQL_ROOT_PASSWORD=vagrant
+    - MYSQL_USER=vagrant
+    - MYSQL_PASSWORD=vagrant
+    - MYSQL_DATABASE=myapp
+  volumes:
+    - ./db/mariadb/data:/var/lib/mysql
+    - ./db/mariadb/logs:/var/log/mysql
+
+mongo:
+  container_name: mongo
+  image: mongo
+  volumes:
+    - ./db/mongo/data:/data/db
+
+solr:
+    image: solr
+    ports:
+        - "8983:8983"
+    volumes:
+        # before running create solr/data and chown 8983:8983 it.
+        - ./db/solr/data:/opt/solr/server/solr/mycores
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-precreate
+      - mycore
+
+redis:
+    image: redis
+    ports:
+        - "6379:6379"
+    volumes:
+        - ./db/redis/data:/data
+
+phpmyadmin:
+  image: corbinu/docker-phpmyadmin
+  links:
+    - mysql57:mysql
+  ports:
+    - 8181:80
+  environment:
+    MYSQL_USERNAME: vagrant
+    MYSQL_ROOT_PASSWORD: vagrant

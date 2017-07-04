@@ -1,0 +1,28 @@
+# Composer
+composer.phar
+composer.lock
+
+# OS
+.DS_Store
+*~
+
+# netbeans
+/nbproject
+/nbproject/private/
+
+# misc
+/_tmp
+addgit.sh
+gitlist
+
+# docker container
+/db/mongo/data/*
+/db/mysql56/data/*
+/db/mysql57/data/*
+/db/mariadb/data/*
+/db/redis/data/*
+/db/solr/data/*
+/apache-php56/logs/*
+/apache-php7/logs/*
+#/www/*
+

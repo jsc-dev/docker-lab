@@ -1,0 +1,44 @@
+nginx:
+    build: ./nginx
+    links:
+        - apache-php56:apache-php56
+        - apache-php7:apache-php7
+    ports:
+        - "80:80"
+
+apache-php56:
+    build: ./apache-php56
+    ports:
+        - "8080"
+    expose:
+        - "8080"
+    volumes_from:
+        - dataphp
+        - dataapache
+
+apache-php7:
+    build: ./apache-php7
+    ports:
+        - "8081"
+    expose:
+        - "8081"
+    volumes:
+        - ./apache-php7/logs/apache2:/var/log/apache2
+        - ./apache-php7/sites-enabled:/etc/apache2/sites-enabled
+        - ./apache-php7/conf/ports.conf:/etc/apache2/ports.conf
+        - ./apache-php7/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf
+    volumes_from:
+        - dataphp
+
+dataphp:
+    image: alpine:3.5
+    volumes:
+        - ./www:/var/www
+
+dataapache:
+    image: alpine:3.5
+    volumes:
+        - ./apache-php56/logs/apache2:/var/log/apache2
+        - ./apache-php56/sites-enabled:/etc/apache2/sites-enabled
+        - ./apache-php56/conf/ports.conf:/etc/apache2/ports.conf
+        - ./apache-php56/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf

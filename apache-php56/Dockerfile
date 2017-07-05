@@ -40,13 +40,6 @@ RUN a2enmod expires
 RUN php5enmod mcrypt
 
 
-RUN apt-get update && apt-get install -y libmemcached-dev zlib1g-dev \
-    && pecl install memcached-2.2.0
-#RUN docker-php-ext-enable memcached
-RUN echo "extension=memcached.so" > /etc/php5/fpm/conf.d/30-memcached.ini
-RUN echo "extension=memcached.so" > /etc/php5/cli/conf.d/30-memcached.ini
-RUN echo "extension=memcached.so" > /etc/php5/apache2/conf.d/30-memcached.ini
-
 RUN pecl install redis
 #RUN docker-php-ext-enable redis
 RUN echo "extension=redis.so" > /etc/php5/fpm/conf.d/30-redis.ini

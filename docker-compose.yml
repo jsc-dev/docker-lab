@@ -1,5 +1,6 @@
 nginx:
     build: ./nginx
+    container_name: nginx
     links:
         - apache-php56:apache-php56
         - apache-php7:apache-php7
@@ -8,6 +9,7 @@ nginx:
 
 apache-php56:
     build: ./apache-php56
+    container_name: apache-php56
     ports:
         - "8080"
     expose:
@@ -24,6 +26,7 @@ apache-php56:
 
 apache-php7:
     build: ./apache-php7
+    container_name: apache-php7
     ports:
         - "8081"
     expose:

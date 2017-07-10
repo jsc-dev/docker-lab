@@ -39,33 +39,9 @@ RUN a2enmod expires
 
 RUN php5enmod mcrypt
 
-
-RUN pecl install redis
-#RUN docker-php-ext-enable redis
-RUN echo "extension=redis.so" > /etc/php5/fpm/conf.d/30-redis.ini
-RUN echo "extension=redis.so" > /etc/php5/cli/conf.d/30-redis.ini
-RUN echo "extension=redis.so" > /etc/php5/apache2/conf.d/30-redis.ini
-
-
-# solr requirements, install curl
-RUN apt-get install -y php5-curl
-RUN apt-get install -y libcurl4-gnutls-dev
-# solr requirements, Installing phpize (it will be a part of libxml2)
-RUN apt-get install -y libxml2
-RUN apt-get install -y libxml2-dev
-# next, install solr
-RUN pecl install solr
-RUN echo "extension=solr.so" > /etc/php5/fpm/conf.d/30-solr.ini
-RUN echo "extension=solr.so" > /etc/php5/cli/conf.d/30-solr.ini
-RUN echo "extension=solr.so" > /etc/php5/apache2/conf.d/30-solr.ini
-
-
-# install mongo requirements and mongodb
-RUN apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev
-RUN pecl install mongodb
-RUN echo "extension=mongodb.so" > /etc/php5/fpm/conf.d/30-mongodb.ini
-RUN echo "extension=mongodb.so" > /etc/php5/cli/conf.d/30-mongodb.ini
-RUN echo "extension=mongodb.so" > /etc/php5/apache2/conf.d/30-mongodb.ini
+COPY install_extensions.sh /install_extensions.sh
+RUN ["chmod", "+x", "/install_extensions.sh"]
+RUN ["sh", "/install_extensions.sh"]
 
 
 RUN service apache2 restart

@@ -62,6 +62,33 @@ RUN a2enmod ssl
 RUN a2enmod headers
 RUN a2enmod expires
 
+RUN pecl install redis
+RUN echo "extension=redis.so" > /etc/php/7.0/fpm/conf.d/30-redis.ini
+RUN echo "extension=redis.so" > /etc/php/7.0/cli/conf.d/30-redis.ini
+RUN echo "extension=redis.so" > /etc/php/7.0/apache2/conf.d/30-redis.ini
+
+
+# solr requirements, install curl
+RUN apt-get install -y php7.0-curl
+RUN apt-get install -y libcurl4-gnutls-dev
+# solr requirements, Installing phpize (it will be a part of libxml2)
+RUN apt-get install -y libxml2
+RUN apt-get install -y libxml2-dev
+# next, install solr
+RUN pecl install solr
+RUN echo "extension=solr.so" > /etc/php/7.0/fpm/conf.d/30-solr.ini
+RUN echo "extension=solr.so" > /etc/php/7.0/cli/conf.d/30-solr.ini
+RUN echo "extension=solr.so" > /etc/php/7.0/apache2/conf.d/30-solr.ini
+
+
+# install mongo requirements and mongodb
+RUN apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev
+RUN pecl install mongodb
+RUN echo "extension=mongodb.so" > /etc/php/7.0/fpm/conf.d/30-mongodb.ini
+RUN echo "extension=mongodb.so" > /etc/php/7.0/cli/conf.d/30-mongodb.ini
+RUN echo "extension=mongodb.so" > /etc/php/7.0/apache2/conf.d/30-mongodb.ini
+
+
 RUN service apache2 restart
 
 COPY install_extensions.sh /install_extensions.sh

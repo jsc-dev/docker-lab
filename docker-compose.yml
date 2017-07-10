@@ -38,7 +38,6 @@ apache-php7:
         - ./apache-php7/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf
         - ./apache-php7/conf/30-jsc-custom.ini:/etc/php/7.1/apache2/conf.d/30-jsc-custom.ini
         - ./apache-php7/conf/30-jsc-custom.ini:/etc/php/7.1/cli/conf.d/30-jsc-custom.ini
-
     volumes_from:
         - dataphp
     links:

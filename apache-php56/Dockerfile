@@ -20,8 +20,8 @@ RUN apt-get update && \
 RUN apt-get -qq -y install apache2 apache2-doc libapache2-mod-php5
 RUN service apache2 restart
 
-RUN apt-get -qq -y install php5-common php5-fpm php5-mysql php5-cli php5-curl
-RUN apt-get -y install php5-mysqlnd php5-gd php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-sqlite php5-tidy php5-xmlrpc php5-xsl
+RUN apt-get -qq -y install php5-common php5-fpm php5-mysql php5-cli php5-curl php5-dev
+RUN apt-get -y install php5-mysqlnd php5-gd php5-intl php-pear php5-imagick php5-imap php5-ldap php5-mcrypt php5-memcache php5-sqlite php5-tidy php5-xmlrpc php5-xsl
 RUN apt-get -qq -y install mysql-common mysql-client
 
 ##insert: ServerName localhost in /etc/apache2/httpd.conf
@@ -39,8 +39,47 @@ RUN a2enmod expires
 
 RUN php5enmod mcrypt
 
+
+RUN pecl install redis
+#RUN docker-php-ext-enable redis
+RUN echo "extension=redis.so" > /etc/php5/fpm/conf.d/30-redis.ini
+RUN echo "extension=redis.so" > /etc/php5/cli/conf.d/30-redis.ini
+RUN echo "extension=redis.so" > /etc/php5/apache2/conf.d/30-redis.ini
+
+
+# solr requirements, install curl
+RUN apt-get install -y php5-curl
+RUN apt-get install -y libcurl4-gnutls-dev
+# solr requirements, Installing phpize (it will be a part of libxml2)
+RUN apt-get install -y libxml2
+RUN apt-get install -y libxml2-dev
+# next, install solr
+RUN pecl install solr
+RUN echo "extension=solr.so" > /etc/php5/fpm/conf.d/30-solr.ini
+RUN echo "extension=solr.so" > /etc/php5/cli/conf.d/30-solr.ini
+RUN echo "extension=solr.so" > /etc/php5/apache2/conf.d/30-solr.ini
+
+
+# install mongo requirements and mongodb
+RUN apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev
+RUN pecl install mongodb
+RUN echo "extension=mongodb.so" > /etc/php5/fpm/conf.d/30-mongodb.ini
+RUN echo "extension=mongodb.so" > /etc/php5/cli/conf.d/30-mongodb.ini
+RUN echo "extension=mongodb.so" > /etc/php5/apache2/conf.d/30-mongodb.ini
+
+
 RUN service apache2 restart
 RUN service php5-fpm restart
+
+# install composer global
+RUN curl -s https://getcomposer.org/installer | php
+RUN mv composer.phar /usr/local/bin/composer 
+
+RUN pear install Log
+
+# install eZComponents
+RUN pear channel-discover components.ez.no
+RUN pear install -a ezc/eZComponents
 
 # Add image configuration and scripts
 ADD run.sh /run.sh

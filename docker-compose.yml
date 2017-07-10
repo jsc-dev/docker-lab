@@ -1,5 +1,6 @@
 nginx:
     build: ./nginx
+    container_name: nginx
     links:
         - apache-php56:apache-php56
         - apache-php7:apache-php7
@@ -8,6 +9,7 @@ nginx:
 
 apache-php56:
     build: ./apache-php56
+    container_name: apache-php56
     ports:
         - "8080"
     expose:
@@ -24,6 +26,7 @@ apache-php56:
 
 apache-php7:
     build: ./apache-php7
+    container_name: apache-php7
     ports:
         - "8081"
     expose:
@@ -33,6 +36,9 @@ apache-php7:
         - ./apache-php7/sites-enabled:/etc/apache2/sites-enabled
         - ./apache-php7/conf/ports.conf:/etc/apache2/ports.conf
         - ./apache-php7/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf
+        - ./apache-php7/conf/30-jsc-custom.ini:/etc/php/7.1/apache2/conf.d/30-jsc-custom.ini
+        - ./apache-php7/conf/30-jsc-custom.ini:/etc/php/7.1/cli/conf.d/30-jsc-custom.ini
+
     volumes_from:
         - dataphp
     links:
@@ -54,6 +60,8 @@ dataapache:
         - ./apache-php56/sites-enabled:/etc/apache2/sites-enabled
         - ./apache-php56/conf/ports.conf:/etc/apache2/ports.conf
         - ./apache-php56/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf
+        - ./apache-php56/conf/30-jsc-custom.ini:/etc/php5/cli/conf.d/30-jsc-custom.ini
+        - ./apache-php56/conf/30-jsc-custom.ini:/etc/php5/apache2/conf.d/30-jsc-custom.ini
 
 mysql57:
   container_name: mysql57

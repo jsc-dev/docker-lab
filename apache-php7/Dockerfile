@@ -71,13 +71,6 @@ RUN ["sh", "/install_extensions.sh"]
 #CMD ["/install_extensions.sh"]
 
 
-COPY test.sh /test.sh
-RUN ["chmod", "+x", "/test.sh"]
-RUN ["sh", "/test.sh"]
-#RUN chmod 755 /*.sh
-#CMD ["/test.sh"]
-
-
 RUN service apache2 restart
 
 # install composer global

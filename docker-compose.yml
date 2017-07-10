@@ -18,7 +18,7 @@ apache-php56:
         - dataphp
         - dataapache
     links:
-        - mysql57:mysql57
+        - mysql57:db
         - mongo:mongo
         - redis:redis
         - solr:solr
@@ -41,7 +41,7 @@ apache-php7:
     volumes_from:
         - dataphp
     links:
-        - mysql57:mysql57 
+        - mysql57:db 
         - mongo:mongo
         - redis:redis
         - solr:solr

@@ -5,6 +5,13 @@ MAINTAINER jsc-dev
 
 WORKDIR /var/www
 
+# entscheidend damit im container der apache schreiben kann wenn die rechte im host auf jsc:jsc stehen:
+#on ubuntu:
+RUN usermod -u 1000 www-data
+# on osx:
+#RUN usermod -u 501 www-data
+#RUN usermod -G staff www-data
+
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
@@ -80,6 +87,19 @@ RUN mv composer.phar /usr/local/bin/composer
 ## usefull tools, also for pimcore:
 RUN apt-get install -qq -y html2text zopfli pngcrush jpegoptim exiftool
 
+
+# nodejs
+RUN ln -s /usr/bin/nodejs /usr/bin/node
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
+RUN apt-get -qq -y install nodejs
+RUN nodejs -v
+RUN npm -v
+
+#install npm packages
+RUN npm cache clear
+RUN npm install -g coffee-script
+RUN npm install -g bower
+RUN npm install -g grunt-cli
 
 # Add image configuration and scripts
 ADD run.sh /run.sh

@@ -24,5 +24,5 @@ gitlist
 /db/solr/data/*
 /apache-php56/logs/*
 /apache-php7/logs/*
-#/www/*
+/www/*
 

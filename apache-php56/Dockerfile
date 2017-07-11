@@ -1,9 +1,16 @@
-FROM ubuntu:15.04
+FROM ubuntu:15.10
 
 # File Author / Maintainer
 MAINTAINER jsc-dev
 
 WORKDIR /var/www/html
+
+# entscheidend damit im container der apache schreiben kann wenn die rechte im host auf jsc:jsc stehen:
+#on ubuntu:
+RUN usermod -u 1000 www-data
+# on osx:
+#RUN usermod -u 501 www-data
+#RUN usermod -G staff www-data
 
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
@@ -56,6 +63,19 @@ RUN pear install Log
 # install eZComponents
 RUN pear channel-discover components.ez.no
 RUN pear install -a ezc/eZComponents
+
+# nodejs
+RUN ln -s /usr/bin/nodejs /usr/bin/node
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
+RUN apt-get -qq -y install nodejs
+RUN nodejs -v
+RUN npm -v
+
+#install npm packages
+RUN npm cache clear
+RUN npm install -g coffee-script
+RUN npm install -g bower
+RUN npm install -g grunt-cli
 
 # Add image configuration and scripts
 ADD run.sh /run.sh

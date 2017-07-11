@@ -10,6 +10,7 @@ nginx:
 apache-php56:
     build: ./apache-php56
     container_name: apache-php56
+    hostname: machine9
     ports:
         - "8080"
     expose:
@@ -27,6 +28,7 @@ apache-php56:
 apache-php7:
     build: ./apache-php7
     container_name: apache-php7
+    hostname: machine7
     ports:
         - "8081"
     expose:

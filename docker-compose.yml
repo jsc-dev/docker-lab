@@ -1,0 +1,115 @@
+mysql57:
+  container_name: mysql57
+  image: mysql:5.7.19
+  ports:
+    - "127.0.0.1:3306:3306"
+  restart: always
+  environment:
+    MYSQL_ROOT_PASSWORD: vagrant
+    MYSQL_USER: vagrant
+    MYSQL_PASSWORD: vagrant
+    MYSQL_DATABASE: myapp
+  volumes:
+    - ./db/mysql57/data:/var/lib/mysql
+
+nginx:
+    container_name: nginx
+    build: ./nginx
+    links:
+        - apache-php56:apache-php56
+        - apache-php7:apache-php7
+    ports:
+        - "80:80"
+    volumes:
+        - ./nginx/proxy_params.conf:/etc/nginx/proxy_params.conf
+        - ./nginx/sites-enabled:/etc/nginx/sites-enabled
+        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+apache-php56:
+    container_name: apache-php56
+    build: ./apache-php56
+    hostname: jd1
+    ports:
+        - "8080"
+    expose:
+        - "8080"
+    volumes_from:
+        - dataphp
+        - dataapache
+    links:
+        - mysql57:db
+        - mongo:mongo
+        - redis:redis
+        - solr:solr
+
+apache-php7:
+    container_name: apache-php7
+    build: ./apache-php7
+    hostname: jd2
+    ports:
+        - "8081"
+    expose:
+        - "8081"
+    volumes:
+        - ./apache-php7/logs/apache2:/var/log/apache2
+        - ./apache-php7/sites-enabled:/etc/apache2/sites-enabled
+        - ./apache-php7/conf/ports.conf:/etc/apache2/ports.conf
+        - ./apache-php7/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf
+        - ./apache-php7/conf/30-jsc-custom.ini:/etc/php/7.1/apache2/conf.d/30-jsc-custom.ini
+        - ./apache-php7/conf/30-jsc-custom.ini:/etc/php/7.1/cli/conf.d/30-jsc-custom.ini
+    volumes_from:
+        - dataphp
+    links:
+        - mysql57:db
+        - mongo:mongo
+        - redis:redis
+        - solr:solr
+
+dataphp:
+    container_name: dataphp
+    image: alpine:3.5
+    volumes:
+        - ./www:/var/www
+
+dataapache:
+    container_name: dataapache
+    image: alpine:3.5
+    volumes:
+        - ./apache-php56/logs/apache2:/var/log/apache2
+        - ./apache-php56/sites-enabled:/etc/apache2/sites-enabled
+        - ./apache-php56/conf/ports.conf:/etc/apache2/ports.conf
+        - ./apache-php56/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf
+        - ./apache-php56/conf/30-jsc-custom.ini:/etc/php5/cli/conf.d/30-jsc-custom.ini
+        - ./apache-php56/conf/30-jsc-custom.ini:/etc/php5/apache2/conf.d/30-jsc-custom.ini
+
+mongo:
+  container_name: mongo
+  image: mongo
+  volumes:
+    - ./db/mongo/data:/data/db
+  ports:
+    - 127.0.0.1:27017:27017
+
+solr:
+    image: solr
+    ports:
+        - "9003:8983"
+    volumes:
+        # before running create solr/data and chown 8983:8983 it.
+        - ./db/solr/data:/opt/solr/server/solr/mycores
+        # basic auth for solr gui
+        - ./db/solr/jetty.xml:/opt/solr/server/etc/jetty.xml
+        - ./db/solr/webdefault.xml:/opt/solr/server/etc/webdefault.xml
+        - ./db/solr/realm.properties:/opt/solr/server/etc/realm.properties
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-precreate
+      - mycore
+
+redis:
+    container_name: redis
+    image: redis
+    ports:
+        - "127.0.0.1:6379:6379"
+    volumes:
+        - ./db/redis/data:/data

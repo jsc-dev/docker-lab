@@ -5,7 +5,6 @@ MAINTAINER jsc-dev
 
 WORKDIR /var/www
 
-# entscheidend damit im container der apache schreiben kann wenn die rechte im host auf jsc:jsc stehen:
 #on ubuntu:
 RUN usermod -u 1000 www-data
 # on osx:
@@ -54,6 +53,8 @@ RUN apt-get install -y \
 RUN apt-get -qq -y install apache2 libapache2-mod-php7.1
 RUN apt-get -qq -y install mysql-common mysql-client
 
+RUN apt-get -qq -y install php-mbstring
+
 RUN service apache2 stop && service apache2 start
 
 ##insert: ServerName localhost in /etc/apache2/httpd.conf
@@ -68,8 +69,6 @@ RUN a2enmod actions
 RUN a2enmod ssl
 RUN a2enmod headers
 RUN a2enmod expires
-
-#RUN service apache2 restart
 
 COPY install_extensions.sh /install_extensions.sh
 RUN ["chmod", "+x", "/install_extensions.sh"]

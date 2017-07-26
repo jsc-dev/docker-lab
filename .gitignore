@@ -17,13 +17,22 @@ gitlist
 
 # docker container
 /db/mongo/data/*
-/db/mysql56/data/*
+!/db/mongo/data/.gitkeep
 /db/mysql57/data/*
+!/db/mysql57/data/.gitkeep
 /db/mariadb/data/*
+!/db/mariadb/data/.gitkeep
 /db/redis/data/*
+!/db/redis/data/.gitkeep
 /db/solr/data/*
+!/db/solr/data/.gitkeep
 /db/solr/vol/*
+!/db/solr/vol/.gitkeep
 /apache-php56/logs/*
+!/apache-php56/logs/apache2/.gitkeep
 /apache-php7/logs/*
+!/apache-php7/logs/apache2/.gitkeep
 /www/*
+!/www/html
+!/www/jdocker
 

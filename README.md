@@ -1,6 +1,4 @@
-### docker dev environment
-
-## dont use in live environment!
+### docker-dev - local dev env with docker container
 
 ## containers:
 - nginx (reverseproxy)
@@ -8,6 +6,7 @@
 - apache with php7.1
 - mysql 5.7
 - mariadb
+- phpmyadmin
 - solr
 - redis
 - mongodb
@@ -27,4 +26,9 @@
 - kill all containers: $ docker ps -q -a | xargs docker rm
 - delete all docker images: $ docker rmi $(docker images -q)
 - delete a single docker image: $ docker rmi name-of-the-image
+
+# tips / troubleshooting:
+- chown -R 8983:8983 ./db/solr/data
+- solr admin gui http://ip:9001/solr/ (credentials: admin:DctQ-kz1CoCDnZkVX6!z8l)
+- on linux: chown -R 999:999 ./db/mysql57/data
 

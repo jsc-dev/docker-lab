@@ -5,7 +5,6 @@ MAINTAINER jsc-dev
 
 WORKDIR /var/www/html
 
-# entscheidend damit im container der apache schreiben kann wenn die rechte im host auf jsc:jsc stehen:
 #on ubuntu:
 RUN usermod -u 1000 www-data
 # on osx:
@@ -49,10 +48,6 @@ RUN php5enmod mcrypt
 COPY install_extensions.sh /install_extensions.sh
 RUN ["chmod", "+x", "/install_extensions.sh"]
 RUN ["sh", "/install_extensions.sh"]
-
-
-#RUN service apache2 restart
-#RUN service php5-fpm restart
 
 # install composer global
 RUN curl -s https://getcomposer.org/installer | php

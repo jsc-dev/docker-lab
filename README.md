@@ -2,18 +2,12 @@
 
 ## containers:
 - nginx (reverseproxy)
-- apache with php5.6
 - apache with php7.1
 - mysql 5.7
-- mariadb
-- phpmyadmin
 - solr
-- redis
-- mongodb
 
 # specific docker commands:
 - open a shell @ nginx container: $ docker-compose run nginx bash
-- open a shell @ apache-php56 container: $ docker-compose run apache-php56 bash
 - open a shell @ apache-php7 container: $ docker-compose run apache-php7 bash
 - run a command in a container: $ docker exec -ti mysql57 bash
 
@@ -31,4 +25,4 @@
 - chown -R 8983:8983 ./db/solr/data
 - solr admin gui http://ip:9001/solr/ (credentials: admin:DctQ-kz1CoCDnZkVX6!z8l)
 - on linux: chown -R 999:999 ./db/mysql57/data
-
+- for mysql host use: db

@@ -31,4 +31,4 @@
 - chown -R 8983:8983 ./db/solr/data
 - solr admin gui http://ip:9001/solr/ (credentials: admin:DctQ-kz1CoCDnZkVX6!z8l)
 - on linux: chown -R 999:999 ./db/mysql57/data
-
+- for mysql host use: db

@@ -55,10 +55,6 @@ RUN mv composer.phar /usr/local/bin/composer
 
 RUN pear install Log
 
-# install eZComponents
-RUN pear channel-discover components.ez.no
-RUN pear install -a ezc/eZComponents
-
 # nodejs
 RUN ln -s /usr/bin/nodejs /usr/bin/node
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -

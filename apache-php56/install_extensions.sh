@@ -6,9 +6,9 @@ echo "install pecl extensions and requirements..." > /var/www/log.txt
 if ! pecl list | grep redis >/dev/null 2>&1;
 then
     pecl install redis
-    echo "extension=redis.so" > /etc/php5/fpm/conf.d/30-redis.ini
-    echo "extension=redis.so" > /etc/php5/cli/conf.d/30-redis.ini
-    echo "extension=redis.so" > /etc/php5/apache2/conf.d/30-redis.ini
+    echo "extension=redis.so" > /etc/php/5.6/fpm/conf.d/30-redis.ini
+    echo "extension=redis.so" > /etc/php/5.6/cli/conf.d/30-redis.ini
+    echo "extension=redis.so" > /etc/php/5.6/apache2/conf.d/30-redis.ini
 else
     echo "pecl redis exists"
 fi
@@ -26,9 +26,9 @@ then
 
 	# next, install solr
 	pecl install solr
-	echo "extension=solr.so" > /etc/php5/fpm/conf.d/30-solr.ini
-	echo "extension=solr.so" > /etc/php5/cli/conf.d/30-solr.ini
-	echo "extension=solr.so" > /etc/php5/apache2/conf.d/30-solr.ini
+	echo "extension=solr.so" > /etc/php/5.6/fpm/conf.d/30-solr.ini
+	echo "extension=solr.so" > /etc/php/5.6/cli/conf.d/30-solr.ini
+	echo "extension=solr.so" > /etc/php/5.6/apache2/conf.d/30-solr.ini
 else
     echo "pecl solr exists"
 fi
@@ -41,9 +41,9 @@ then
 	apt-get install -qq -y libcurl4-openssl-dev pkg-config libssl-dev
 	# install mongodb
 	pecl install mongodb
-	echo "extension=mongodb.so" > /etc/php5/fpm/conf.d/30-mongodb.ini
-	echo "extension=mongodb.so" > /etc/php5/cli/conf.d/30-mongodb.ini
-	echo "extension=mongodb.so" > /etc/php5/apache2/conf.d/30-mongodb.ini
+	echo "extension=mongodb.so" > /etc/php/5.6/fpm/conf.d/30-mongodb.ini
+	echo "extension=mongodb.so" > /etc/php/5.6/cli/conf.d/30-mongodb.ini
+	echo "extension=mongodb.so" > /etc/php/5.6/apache2/conf.d/30-mongodb.ini
 else
     echo "pecl mongo exists"
 fi

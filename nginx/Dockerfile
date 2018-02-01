@@ -3,5 +3,3 @@ FROM nginx
 
 # File Author / Maintainer
 MAINTAINER jsc-dev
-
-

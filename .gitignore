@@ -35,4 +35,4 @@ gitlist
 /www/*
 !/www/html
 !/www/jdocker
-
+/nginx/logs/*

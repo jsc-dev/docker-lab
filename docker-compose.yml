@@ -1,144 +1,146 @@
-mysql57:
-  container_name: mysql57
-  image: mysql:5.7.19
-  ports:
-    - "3306:3306"
-  restart: always
-  environment:
-    MYSQL_ROOT_PASSWORD: vagrant
-    MYSQL_USER: vagrant
-    MYSQL_PASSWORD: vagrant
-    MYSQL_DATABASE: myapp
-  volumes:
-    - ./db/mysql57/data:/var/lib/mysql
+version: '3.4'
+services:
+    mysql57:
+      container_name: mysql57
+      image: mysql:5.7.19
+      ports:
+        - "127.0.0.1:3306:3306"
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: vagrant
+        MYSQL_USER: vagrant
+        MYSQL_PASSWORD: vagrant
+        MYSQL_DATABASE: myapp
+      volumes:
+        - ./db/mysql57/data:/var/lib/mysql
 
-mariadb:
-  container_name: mariadb
-  image: mariadb
-  ports:
-    - "3308:3306"
-  environment:
-    - MYSQL_ROOT_PASSWORD=vagrant
-    - MYSQL_USER=vagrant
-    - MYSQL_PASSWORD=vagrant
-    - MYSQL_DATABASE=myapp
-  volumes:
-    - ./db/mariadb/data:/var/lib/mysql
-    - ./db/mariadb/logs:/var/log/mysql
+    mariadb:
+      container_name: mariadb
+      image: mariadb
+      ports:
+        - "3308:3306"
+      environment:
+        - MYSQL_ROOT_PASSWORD=vagrant
+        - MYSQL_USER=vagrant
+        - MYSQL_PASSWORD=vagrant
+        - MYSQL_DATABASE=myapp
+      volumes:
+        - ./db/mariadb/data:/var/lib/mysql
+        - ./db/mariadb/logs:/var/log/mysql
 
-nginx:
-    container_name: nginx
-    build: ./nginx
-    links:
-        - apache-php56:apache-php56
-        - apache-php7:apache-php7
-    ports:
-        - "80:80"
-    volumes:
-        - ./nginx/proxy_params.conf:/etc/nginx/proxy_params.conf
-        - ./nginx/sites-enabled:/etc/nginx/sites-enabled
-        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    nginx:
+        container_name: nginx
+        build: ./nginx
+        restart: always
+        links:
+            - apache-php56:apache-php56
+            - apache-php7:apache-php7
+        ports:
+            - "80:80"
+        depends_on:
+            - apache-php7
+            - apache-php56
+        volumes:
+            - ./nginx/proxy_params.conf:/etc/nginx/proxy_params.conf:ro
+            - ./nginx/sites-enabled:/etc/nginx/sites-enabled:ro
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./nginx/logs:/var/log/nginx
 
-apache-php56:
-    container_name: apache-php56
-    build: ./apache-php56
-    hostname: machine9
-    ports:
-        - "8080"
-    expose:
-        - "8080"
-    volumes_from:
-        - dataphp
-        - dataapache
-    links:
-        - mysql57:db
-        - mongo:mongo
-        - redis:redis
-        - solr:solr
-        - mariadb:mariadb
+    apache-php56:
+        container_name: apache-php56
+        build: ./apache-php56
+        hostname: machine9
+        restart: always
+        ports:
+            - "8080"
+        expose:
+            - "8080"
+        links:
+            - mysql57:db
+            - solr:solr
+            - mariadb:mariadb
+            - mongo:mongo
+            - redis:redis
+        volumes:
+            - ./apache-php56/logs/apache2:/var/log/apache2
+            - ./apache-php56/sites-enabled:/etc/apache2/sites-enabled
+            - ./apache-php56/conf/ports.conf:/etc/apache2/ports.conf:ro
+            - ./apache-php56/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf:ro
+            - ./apache-php56/conf/30-jsc-custom.ini:/etc/php5/cli/conf.d/30-jsc-custom.ini:ro
+            - ./apache-php56/conf/30-jsc-custom.ini:/etc/php5/apache2/conf.d/30-jsc-custom.ini:ro
+            - ./www:/var/www
 
-apache-php7:
-    container_name: apache-php7
-    build: ./apache-php7
-    hostname: machine7
-    ports:
-        - "8081"
-    expose:
-        - "8081"
-    volumes:
-        - ./apache-php7/logs/apache2:/var/log/apache2
-        - ./apache-php7/sites-enabled:/etc/apache2/sites-enabled
-        - ./apache-php7/conf/ports.conf:/etc/apache2/ports.conf
-        - ./apache-php7/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf
-        - ./apache-php7/conf/30-jsc-custom.ini:/etc/php/7.1/apache2/conf.d/30-jsc-custom.ini
-        - ./apache-php7/conf/30-jsc-custom.ini:/etc/php/7.1/cli/conf.d/30-jsc-custom.ini
-    volumes_from:
-        - dataphp
-    links:
-        - mysql57:db
-        - mongo:mongo
-        - redis:redis
-        - solr:solr
-        - mariadb:mariadb
+    apache-php7:
+        container_name: apache-php7
+        build: ./apache-php7
+        hostname: machine7
+        restart: always
+        ports:
+            - "8081"
+        expose:
+            - "8081"
+        links:
+            - mysql57:db
+            - solr:solr
+            - mariadb:mariadb
+            - mongo:mongo
+            - redis:redis
+        environment:
+            - APACHE_RUN_USER=www-data
+            - APACHE_RUN_GROUP=www-data
+        volumes:
+            - ./apache-php7/logs/apache2:/var/log/apache2
+            - ./apache-php7/sites-enabled:/etc/apache2/sites-enabled:ro
+            - ./apache-php7/conf/ports.conf:/etc/apache2/ports.conf:ro
+            - ./apache-php7/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf:ro
+            - ./apache-php7/conf/30-jsc-custom.ini:/etc/php/7.1/apache2/conf.d/30-jsc-custom.ini:ro
+            - ./apache-php7/conf/30-jsc-custom.ini:/etc/php/7.1/cli/conf.d/30-jsc-custom.ini:ro
+            - ./www:/var/www
 
-dataphp:
-    container_name: dataphp
-    image: alpine:3.5
-    volumes:
-        - ./www:/var/www
+    solr:
+        image: solr
+        container_name: solr
+        restart: always
+        ports:
+            - "8983"
+            #- "9003:8983"
+        volumes:
+            # before running create solr/data and chown 8983:8983 it.
+            - ./db/solr/data:/opt/solr/server/solr
+            # basic auth for solr gui
+            - ./db/solr/jetty.xml:/opt/solr/server/etc/jetty.xml
+            - ./db/solr/webdefault.xml:/opt/solr/server/etc/webdefault.xml
+            - ./db/solr/realm.properties:/opt/solr/server/etc/realm.properties
+        entrypoint:
+          - docker-entrypoint.sh
+          - solr-precreate
+          - mycore
 
-dataapache:
-    container_name: dataapache
-    image: alpine:3.5
-    volumes:
-        - ./apache-php56/logs/apache2:/var/log/apache2
-        - ./apache-php56/sites-enabled:/etc/apache2/sites-enabled
-        - ./apache-php56/conf/ports.conf:/etc/apache2/ports.conf
-        - ./apache-php56/conf/jsc-remoteip.conf:/etc/apache2/conf-enabled/jsc-remoteip.conf
-        - ./apache-php56/conf/30-jsc-custom.ini:/etc/php5/cli/conf.d/30-jsc-custom.ini
-        - ./apache-php56/conf/30-jsc-custom.ini:/etc/php5/apache2/conf.d/30-jsc-custom.ini
+    mongo:
+      container_name: mongo
+      image: mongo
+      volumes:
+        - ./db/mongo/data:/data/db
+      ports:
+        - 127.0.0.1:27017:27017
 
-mongo:
-  container_name: mongo
-  image: mongo
-  volumes:
-    - ./db/mongo/data:/data/db
-  ports:
-    - 127.0.0.1:27017:27017
+    redis:
+        container_name: redis
+        image: redis
+        hostname: redismachine
+        ports:
+            - "6379:6379"
+        environment:
+          REDIS_PORT: 6379
+        volumes:
+            - ./db/redis/data:/data
 
-solr:
-    image: solr
-    ports:
-        - "9003:8983"
-    volumes:
-        # before running create solr/data and chown 8983:8983 it.
-        - ./db/solr/data:/opt/solr/server/solr/mycores
-        # basic auth for solr gui
-        - ./db/solr/jetty.xml:/opt/solr/server/etc/jetty.xml
-        - ./db/solr/webdefault.xml:/opt/solr/server/etc/webdefault.xml
-        - ./db/solr/realm.properties:/opt/solr/server/etc/realm.properties
-    entrypoint:
-      - docker-entrypoint.sh
-      - solr-precreate
-      - mycore
-
-redis:
-    container_name: redis
-    image: redis
-    hostname: redismachine
-    ports:
-        - "6379:6379"
-    environment:
-      REDIS_PORT: 6379
-    volumes:
-        - ./db/redis/data:/data
-
-phpmyadmin:
-  image: corbinu/docker-phpmyadmin
-  links:
-    - mysql57:mysql
-  ports:
-    - 8181:80
-  environment:
-    MYSQL_USERNAME: vagrant
-    MYSQL_ROOT_PASSWORD: vagrant
+    # phpmyadmin:
+    #   image: corbinu/docker-phpmyadmin
+    #   links:
+    #     - mysql57:mysql
+    #   ports:
+    #     - 8181:80
+    #   environment:
+    #     MYSQL_USERNAME: vagrant
+    #     MYSQL_ROOT_PASSWORD: vagrant
